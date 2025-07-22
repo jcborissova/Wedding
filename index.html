@@ -1,3 +1,5 @@
+<!-- ⚠️ Asegúrate de tener estas imágenes: decor1.png, b1.png, foto-itinerario-vestimenta.jpg, foto-vestimenta-regalo.jpg -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -57,12 +59,11 @@
     </p>
   </section>
 
-  <!-- Fecha destacada con imagen -->
+  <!-- Fecha destacada -->
   <section class="relative h-[90vh] w-full overflow-hidden">
     <img src="b1.png" alt="Fecha Boda" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-black/20"></div>
     <div class="relative z-10 flex flex-col items-center justify-center text-white h-full text-center px-4 pt-10">
-      <!-- Texto curvo: SÁBADO -->
       <svg viewBox="0 0 300 100" class="w-[260px] h-[90px] -mb-6">
         <defs>
           <path id="curve" d="M 10,90 A 140,80 0 0,1 290,90" fill="transparent"/>
@@ -96,7 +97,6 @@
   <section class="bg-cream px-6 py-16 text-center text-taupe border-b border-beige">
     <h2 class="text-3xl font-semibold tracking-wide mb-10">Itinerario</h2>
     <div class="max-w-md mx-auto space-y-12">
-      <!-- Evento -->
       <div class="flex flex-col items-center space-y-2">
         <svg class="w-6 h-6 text-olive" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3l8.485 4.242v2.508H3.875V7.242L12 3z" /></svg>
         <h3 class="uppercase text-sm font-bold">Ceremonia</h3>
@@ -125,6 +125,9 @@
     </div>
   </section>
 
+  <!-- Imagen entre itinerario y vestimenta -->
+  <section><img src="p2.png" alt="Decoración especial" class="w-full object-cover"/></section>
+
   <!-- Código de Vestimenta -->
   <section class="bg-white py-14 px-6 text-center border-b border-beige">
     <h2 class="text-2xl font-semibold mb-1 tracking-wide">Código de Vestimenta</h2>
@@ -139,6 +142,18 @@
       <div class="w-7 h-7 rounded-full border border-[#ccc]" style="background-color: #d8d3d1;"></div>
       <div class="w-7 h-7 rounded-full border border-[#ccc]" style="background-color: #ada7a2;"></div>
     </div>
+  </section>
+
+  <!-- Imagen entre vestimenta y regalos -->
+  <section><img src="p3.png" alt="Detalles" class="w-full object-cover"/></section>
+
+  <!-- Mesa de regalos -->
+  <section class="bg-[#f5f3ef] py-14 px-6 text-center">
+    <h2 class="text-2xl font-semibold mb-2">Mesa de Regalos</h2>
+    <p class="max-w-xl mx-auto text-[#4a4a3a] leading-relaxed">
+      El mejor regalo es tu presencia en este día tan especial. Pero si deseas tener un gesto adicional con nosotros, hemos creado una pequeña mesa de regalos virtual para facilitarte las opciones.
+    </p>
+    <a href="https://www.amazon.com/wedding-registry" target="_blank" class="inline-block mt-6 px-6 py-2 rounded-full bg-moss text-white hover:bg-[#567456] transition">Ver opciones de regalo</a>
   </section>
 
   <!-- Confirmar asistencia -->

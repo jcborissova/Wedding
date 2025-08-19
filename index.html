@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Invitación - Melissa & Juan Carlos</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236a744c'/%3E%3Ccircle cx='32' cy='40' r='14' fill='none' stroke='white' stroke-width='3'/%3E%3Cpath d='M26 18h12l-3-5h-6l-3 5z' fill='none' stroke='white' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -27,15 +28,20 @@
     }
   </script>
   <style>
-    body {
-      font-family: 'Cormorant Garamond', serif;
-    }
-    h1, h2, .initials {
-      font-family: 'Italiana', serif;
-    }
+    body { font-family: 'Cormorant Garamond', serif; }
+    h1, h2, .initials { font-family: 'Italiana', serif; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+    .input { @apply w-full px-3 py-2 rounded-lg border border-beige/70 focus:outline-none focus:ring-2 focus:ring-olive/60; }
+    .label { @apply text-sm text-[#6b645a]; }
+    
   </style>
 </head>
 <body class="bg-cream text-taupe">
+  <!-- Loader inicial -->
+  <div id="pageLoader" class="fixed inset-0 z-[200] bg-cream flex flex-col items-center justify-center gap-3">
+    <div class="w-12 h-12 border-4 border-olive border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-sm text-[#6b645a]">Cargando tu invitación...</p>
+  </div>
 
   <!-- Portada -->
   <section class="relative h-screen w-full overflow-hidden">
@@ -43,7 +49,9 @@
     <div class="absolute inset-0 bg-black/30"></div>
     <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
       <div class="initials text-[82px] tracking-widest leading-none drop-shadow-md">MJ</div>
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mt-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <h1 id="saludo" class="mt-6 text-xl font-medium opacity-90"></h1>
+      <p id="subsaludo" class="mt-2 text-sm opacity-90"></p>
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mt-6 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
     </div>
@@ -62,7 +70,7 @@
     <img src="b1.png" alt="Fecha Boda" class="absolute inset-0 w-full h-full object-cover" />
     <div class="absolute inset-0 bg-black/20"></div>
     <div class="relative z-10 flex flex-col items-center justify-center text-white h-full text-center px-4 pt-10">
-      <svg viewBox="0 0 300 100" class="w-[260px] h-[90px] -mb-6">
+      <svg viewBox="0 0 300 100" class="w-[260px] h-[90px] -mb-6" aria-hidden="true">
         <defs>
           <path id="curve" d="M 10,90 A 140,80 0 0,1 290,90" fill="transparent"/>
         </defs>
@@ -81,9 +89,9 @@
     <h2 class="text-2xl uppercase font-semibold mb-2">Ceremonia</h2>
     <p class="text-lg font-light">Casa España</p>
     <p class="mt-2 text-sm leading-relaxed font-light">Santo Domingo, República Dominicana</p>
-    <a href="https://www.google.com/maps/place/Casa+España,+Santo+Domingo" target="_blank"
+    <a href="https://maps.app.goo.gl/t4rHBe81HyFoYmyX6" target="_blank" rel="noopener"
        class="inline-flex items-center gap-2 mt-6 px-5 py-2 rounded-full border border-white text-white hover:bg-white hover:text-moss transition font-medium text-sm tracking-wide">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10.5a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 10.5c0 7.5-7.5 11.25-7.5 11.25S4.5 18 4.5 10.5a7.5 7.5 0 1115 0z" />
       </svg>
@@ -91,82 +99,87 @@
     </a>
   </section>
 
-<!-- Cronograma de Itinerario centrado -->
+<!-- Itinerario -->
 <section class="bg-cream px-6 py-16 text-taupe border-b border-beige">
   <h2 class="text-3xl font-semibold tracking-wide text-center mb-12">Itinerario</h2>
-  <div class="relative max-w-xl mx-auto">
 
-    <!-- Línea central -->
-    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-px bg-[#c5c2b7]"></div>
+  <div class="relative max-w-2xl mx-auto">
+    <!-- línea central -->
+    <div class="absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-[#d9d6cd]"></div>
 
-    <!-- Evento -->
-    <div class="relative mb-12 flex flex-col items-center text-center">
-      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-olive text-white z-10 shadow-md mb-2">
-        <!-- Icono templo -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3l8.485 4.242v2.508H3.875V7.242L12 3z" />
+    <!-- Item -->
+    <div class="relative mb-14 flex flex-col items-center text-center">
+      <div class="z-10 mb-3 grid place-items-center w-14 h-14 rounded-full bg-white/90 ring-1 ring-olive/25 shadow-[0_6px_18px_rgba(0,0,0,.08)]">
+        <!-- anillo -->
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-olive" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 13.5a5.5 5.5 0 1 1-5.5 5.5A5.5 5.5 0 0 1 12 13.5Z"/>
+          <path d="M9.5 6.25h5L13 3.5h-2l-1.5 2.75Z"/>
         </svg>
       </div>
-      <h3 class="text-sm uppercase font-bold">Ceremonia</h3>
-      <p class="text-olive font-medium">5:00 P.M.</p>
+      <div class="uppercase text-[12px] tracking-[.2em] font-semibold">Ceremonia</div>
+      <div class="mt-1 text-olive"><span class="font-semibold">5:00</span> <span class="tracking-[.06em] text-[#6f6a5d]">P.M.</span></div>
     </div>
 
-    <div class="relative mb-12 flex flex-col items-center text-center">
-      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-olive text-white z-10 shadow-md mb-2">
-        <!-- Icono copa -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 4h8l-.867 6.065a3 3 0 01-5.266 0L8 4zM12 14v6m-4 0h8" />
+    <!-- Item -->
+    <div class="relative mb-14 flex flex-col items-center text-center">
+      <div class="z-10 mb-3 grid place-items-center w-14 h-14 rounded-full bg-white/90 ring-1 ring-olive/25 shadow-[0_6px_18px_rgba(0,0,0,.08)]">
+        <!-- copa -->
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-olive" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 4h10v2a5 5 0 0 1-5 5 5 5 0 0 1-5-5V4Z"/>
+          <path d="M12 11v7M9 18h6"/>
         </svg>
       </div>
-      <h3 class="text-sm uppercase font-bold">Recepción</h3>
-      <p class="text-olive font-medium">6:00 P.M.</p>
+      <div class="uppercase text-[12px] tracking-[.2em] font-semibold">Recepción</div>
+      <div class="mt-1 text-olive"><span class="font-semibold">6:00</span> <span class="tracking-[.06em] text-[#6f6a5d]">P.M.</span></div>
     </div>
 
-    <div class="relative mb-12 flex flex-col items-center text-center">
-      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-olive text-white z-10 shadow-md mb-2">
-        <!-- Icono plato -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M9 14h6m-3 0v5" />
+    <!-- Item -->
+    <div class="relative mb-14 flex flex-col items-center text-center">
+      <div class="z-10 mb-3 grid place-items-center w-14 h-14 rounded-full bg-white/90 ring-1 ring-olive/25 shadow-[0_6px_18px_rgba(0,0,0,.08)]">
+        <!-- cloche -->
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-olive" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 16h16M6 16a6 6 0 1 1 12 0"/>
+          <path d="M12 6v-1"/>
         </svg>
       </div>
-      <h3 class="text-sm uppercase font-bold">Cena</h3>
-      <p class="text-olive font-medium">8:00 P.M.</p>
+      <div class="uppercase text-[12px] tracking-[.2em] font-semibold">Cena</div>
+      <div class="mt-1 text-olive"><span class="font-semibold">8:00</span> <span class="tracking-[.06em] text-[#6f6a5d]">P.M.</span></div>
     </div>
 
-    <div class="relative mb-12 flex flex-col items-center text-center">
-      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-olive text-white z-10 shadow-md mb-2">
-        <!-- Icono nota musical -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-2v13" />
-          <circle cx="6" cy="18" r="3" />
+    <!-- Item -->
+    <div class="relative mb-14 flex flex-col items-center text-center">
+      <div class="z-10 mb-3 grid place-items-center w-14 h-14 rounded-full bg-white/90 ring-1 ring-olive/25 shadow-[0_6px_18px_rgba(0,0,0,.08)]">
+        <!-- nota musical -->
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-olive" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M10 18.5a2.5 2.5 0 1 1-1.5-2.3V6l8-2v9.5a2.5 2.5 0 1 1-1.5-2.3"/>
         </svg>
       </div>
-      <h3 class="text-sm uppercase font-bold">Primer Baile</h3>
-      <p class="text-olive font-medium">9:00 P.M.</p>
+      <div class="uppercase text-[12px] tracking-[.2em] font-semibold">Primer Baile</div>
+      <div class="mt-1 text-olive"><span class="font-semibold">9:00</span> <span class="tracking-[.06em] text-[#6f6a5d]">P.M.</span></div>
     </div>
 
+    <!-- Item -->
     <div class="relative flex flex-col items-center text-center">
-      <div class="flex items-center justify-center w-12 h-12 rounded-full bg-olive text-white z-10 shadow-md mb-2">
-        <!-- Icono estrella/fuego -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v4m0 0v4m0-4h4m-4 0H8m9 7l2.5 2.5M15 15l-2.5 2.5M6 12l-2.5-2.5M9 9l2.5-2.5" />
+      <div class="z-10 mb-3 grid place-items-center w-14 h-14 rounded-full bg-white/90 ring-1 ring-olive/25 shadow-[0_6px_18px_rgba(0,0,0,.08)]">
+        <!-- destellos -->
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-olive" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 12l-2 2m2-2l2 2M18 8l-2 2m2-2l2 2M12 4v3M4 12h3M20 12h-3M12 17v3"/>
         </svg>
       </div>
-      <h3 class="text-sm uppercase font-bold">Fiesta</h3>
-      <p class="text-olive font-medium">9:30 P.M.</p>
+      <div class="uppercase text-[12px] tracking-[.2em] font-semibold">Fiesta</div>
+      <div class="mt-1 text-olive"><span class="font-semibold">9:30</span> <span class="tracking-[.06em] text-[#6f6a5d]">P.M.</span></div>
     </div>
-
   </div>
 </section>
 
 
-  <!-- Imagen entre itinerario y vestimenta -->
+  <!-- Imagen -->
   <section><img src="p2.png" alt="Decoración especial" class="w-full object-cover"/></section>
 
   <!-- Código de Vestimenta -->
   <section class="bg-white py-14 px-6 text-center border-b border-beige">
     <div class="flex justify-center mb-4">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-olive" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4m0 0v4m0-4h4m-4 0H1m18 14v-4m0 0v-4m0 4h-4m4 0h4M7.5 12a4.5 4.5 0 109 0 4.5 4.5 0 10-9 0z" />
       </svg>
     </div>
@@ -202,16 +215,19 @@
     </div>
   </section>
 
-  <!-- Imagen entre vestimenta y regalos -->
+  <!-- Imagen -->
   <section><img src="p3.png" alt="Detalles" class="w-full object-cover"/></section>
 
   <!-- Mesa de regalos -->
-  <section class="bg-[#f5f3ef] py-14 px-6 text-center">
+  <section class="bg-[#f5f3ef] py-14 px-6 text-center" id="mesa-regalos">
     <h2 class="text-2xl font-semibold mb-2">Mesa de Regalos</h2>
     <p class="max-w-xl mx-auto text-[#4a4a3a] leading-relaxed">
       El mejor regalo es tu presencia en este día tan especial. Pero si deseas tener un gesto adicional con nosotros, hemos creado una pequeña mesa de regalos virtual para facilitarte las opciones.
     </p>
-    <a href="https://www.amazon.com/wedding-registry" target="_blank" class="inline-block mt-6 px-6 py-2 rounded-full bg-moss text-white hover:bg-[#567456] transition">Ver opciones de regalo</a>
+    <button id="openGiftsModal"
+      class="inline-block mt-6 px-6 py-2 rounded-full bg-moss text-white hover:bg-[#567456] transition shadow-sm focus:outline-none focus:ring-2 focus:ring-moss focus:ring-offset-2">
+      Ver opciones de regalo
+    </button>
   </section>
 
   <!-- Confirmar asistencia -->
@@ -220,7 +236,13 @@
     <p class="text-base mb-2">Agradecemos tu confirmación antes del:</p>
     <p class="text-lg font-medium text-[#4a4a3a] mb-4">21 de octubre del 2025</p>
     <p class="text-sm italic text-[#7a7262] mb-6">Respetuosamente, sin niños</p>
-    <a href="https://wa.me/18091234567" target="_blank" class="inline-block bg-moss text-white px-6 py-2 rounded-full hover:bg-[#567456] transition shadow-sm">Confirmar por WhatsApp</a>
+
+    <!-- ABRE EL MODAL DE RSVP -->
+    <button id="openRsvpModal"
+      class="inline-block bg-moss text-white px-6 py-2 rounded-full hover:bg-[#567456] transition shadow-sm">
+      Confirmar asistencia
+    </button>
+    <p id="familyHint" class="mt-3 text-xs text-[#6b645a]"></p>
   </section>
 
   <!-- Footer -->
@@ -228,6 +250,510 @@
     <p>Gracias por ser parte de nuestra historia de amor.</p>
     <p class="mt-2">Con cariño,<br><strong>Melissa & Juan Carlos</strong></p>
   </footer>
+
+  <!-- Modal de Regalos -->
+  <div id="giftsModal" class="fixed inset-0 z-[100] hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-opacity"></div>
+    <div class="relative mx-auto max-w-lg px-4 h-full flex items-center justify-center">
+      <div class="w-full rounded-2xl bg-white shadow-xl border border-beige/60 overflow-hidden animate-[fadeIn_.25s_ease]">
+        <div class="bg-cream/70 px-6 py-4 border-b border-beige/70 flex items-center justify-between">
+          <h3 class="text-xl font-semibold tracking-wide text-olive">Opciones de Regalo</h3>
+          <button id="closeGiftsModal" class="p-2 rounded-full hover:bg-beige/40 transition" aria-label="Cerrar modal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-taupe" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="px-6 py-6 space-y-6">
+          <div class="text-center">
+            <p class="text-sm uppercase tracking-widest text-[#918d7c] mb-2">Lista de regalos</p>
+            <a href="https://listaderegalos.casacuesta.com/Event/Melissa-JuanCarlos?utm_source=share" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-moss text-white hover:bg-[#567456] transition shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7m16 0H4m16 0V7a2 2 0 00-2-2h-3.5a2 2 0 00-2 2v0M4 12V7a2 2 0 012-2h3.5a2 2 0 012 2v0"/>
+              </svg>
+              Ver lista en Casa Cuesta
+            </a>
+          </div>
+
+          <div class="h-px bg-beige/70"></div>
+
+          <div>
+            <p class="text-sm uppercase tracking-widest text-[#918d7c] text-center mb-4">Cuentas bancarias</p>
+
+            <div class="rounded-xl border border-beige/70 p-4 bg-white/60 mb-3">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-[15px] font-semibold text-taupe">Banco Popular</p>
+                  <p class="text-sm text-[#6b645a]">Cuenta Corriente</p>
+                  <p class="mt-1 font-medium tracking-wider text-olive" id="popularNumber">842409260</p>
+                  <p class="text-sm text-[#6b645a]">Titular: Juan Carlos Borissova</p>
+                  <p class="text-xs text-[#8a8576]">RNC/Cédula: 402-0062460-5</p>
+                </div>
+                <button class="copyBtn shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-olive text-olive hover:bg-olive hover:text-white transition"
+                        data-copy="#popularNumber" aria-label="Copiar número Popular">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="1.5"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="1.5"/>
+                  </svg>
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-beige/70 p-4 bg-white/60">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <p class="text-[15px] font-semibold text-taupe">Banreservas</p>
+                  <p class="text-sm text-[#6b645a]">Cuenta de Ahorros</p>
+                  <p class="mt-1 font-medium tracking-wider text-olive" id="banreservasNumber">9605752645</p>
+                  <p class="text-sm text-[#6b645a]">Titular: Juan Carlos Borissova</p>
+                  <p class="text-xs text-[#8a8576]">RNC/Cédula: 402-0062460-5</p>
+                </div>
+                <button class="copyBtn shrink-0 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-olive text-olive hover:bg-olive hover:text-white transition"
+                        data-copy="#banreservasNumber" aria-label="Copiar número Banreservas">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="1.5"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="1.5"/>
+                  </svg>
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            <p class="text-[12px] text-center text-[#8a8576] mt-3">* Por favor, al transferir, indicar en la referencia: “Regalo Boda MJ”.</p>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 bg-cream/70 border-t border-beige/70 text-center">
+          <button id="closeGiftsModal2"
+                  class="inline-flex items-center px-4 py-2 rounded-full border border-olive text-olive hover:bg-olive hover:text-white transition">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RSVP (DINÁMICO) -->
+  <div id="rsvpModal" class="fixed inset-0 z-[110] hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-opacity"></div>
+    <div class="relative mx-auto max-w-3xl px-4 h-full flex items-center justify-center">
+      <div class="w-full rounded-2xl bg-white shadow-xl border border-beige/60 overflow-hidden animate-[fadeIn_.25s_ease]">
+        <!-- Header -->
+        <div class="bg-cream/70 px-6 py-4 border-b border-beige/70 flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-semibold tracking-wide text-olive">Confirmar asistencia</h3>
+            <p class="text-sm text-[#6b645a]">Selecciona quiénes asistirán y completa su cédula.</p>
+          </div>
+          <button id="closeRsvpModal" class="p-2 rounded-full hover:bg-beige/40 transition" aria-label="Cerrar modal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-taupe" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="px-6 py-5">
+          <!-- Resumen -->
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <p class="text-sm text-[#6b645a]">Invitados en tu lista: <span id="rsvpTotal" class="font-semibold text-olive">0</span></p>
+            <p class="text-sm">Confirmados: <span id="rsvpConfirmed" class="font-semibold text-olive">0</span></p>
+          </div>
+
+          <!-- Tabla / lista -->
+          <div class="overflow-x-auto rounded-xl border border-beige/60">
+            <table class="min-w-full bg-white text-sm">
+              <thead class="bg-cream/60">
+                <tr class="text-left text-[#6b645a]">
+                  <th class="px-3 py-2">Asistirá</th>
+                  <th class="px-3 py-2">Nombre</th>
+                  <th class="px-3 py-2">Cédula</th>
+                </tr>
+              </thead>
+              <tbody id="rsvpBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Contacto opcional -->
+          <div class="grid sm:grid-cols-2 gap-4 mt-5">
+            <div>
+              <label class="label">Teléfono de contacto (opcional)</label>
+              <input id="rsvpPhone" type="tel" class="input" placeholder="809-000-0000" />
+            </div>
+            <div>
+              <label class="label">Correo (opcional)</label>
+              <input id="rsvpEmail" type="email" class="input" placeholder="correo@ejemplo.com" />
+            </div>
+          </div>
+
+          <!-- Alertas -->
+          <p id="rsvpError" class="hidden mt-4 text-sm text-red-600"></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-cream/70 border-t border-beige/70 flex items-center justify-end gap-3">
+          <button id="closeRsvpModal2" class="px-4 py-2 rounded-full border border-olive text-olive hover:bg-olive hover:text-white transition">Cerrar</button>
+          <button id="saveRsvpBtn" class="px-4 py-2 rounded-full bg-moss text-white hover:bg-[#567456] transition">
+            <span id="saveText">Guardar</span>
+            <span id="saveSpinner" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script general (modales, copiar, RSVP) -->
+  <script>
+    (function () {
+      /* ========= CONFIG: TU ENDPOINT E IDS ========= */
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxp-XDH0-hYX6YgGfUvI6HxfELwqH3WJRnPZASjlml5inZwFV0x5X46N6ypyOPB-ECGaQ/exec';
+      const EVENT_ID = 'BODA25';
+      const FAMILIA_ID = new URLSearchParams(location.search).get('fam') || '';
+
+      /* ========= MODAL REGALOS ========= */
+      const giftsModal = document.getElementById('giftsModal');
+      const openGifts = document.getElementById('openGiftsModal');
+      const closeGiftsBtns = [document.getElementById('closeGiftsModal'), document.getElementById('closeGiftsModal2')];
+
+      const openModal = (el) => { el.classList.remove('hidden'); el.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; };
+      const closeModal = (el) => { el.classList.add('hidden'); el.setAttribute('aria-hidden','true'); document.body.style.overflow=''; };
+
+      openGifts?.addEventListener('click', () => openModal(giftsModal));
+      closeGiftsBtns.forEach(b => b?.addEventListener('click', () => closeModal(giftsModal)));
+      giftsModal?.addEventListener('click', (e) => { if (e.target === giftsModal) closeModal(giftsModal); });
+
+      document.querySelectorAll('.copyBtn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const selector = btn.getAttribute('data-copy');
+          const el = selector ? document.querySelector(selector) : null;
+          if (!el) return;
+          try {
+            await navigator.clipboard.writeText(el.textContent.trim());
+            const old = btn.innerHTML;
+            btn.innerHTML = 'Copiado';
+            setTimeout(() => { btn.innerHTML = old; }, 1400);
+          } catch (err) { console.error(err); }
+        });
+      });
+
+      /* ========= MODAL RSVP ========= */
+      // Estado (se llenará desde Sheets)
+      let invitados = []; // [{ id, guest_id, nombre, asistira, cedula, restricciones?, comentarios? }]
+      let familiaData = null;
+      let totalCupo = 0;
+
+      // Elementos UI
+      const rsvpModal = document.getElementById('rsvpModal');
+      const openRsvp = document.getElementById('openRsvpModal');
+      const closeRsvpBtns = [document.getElementById('closeRsvpModal'), document.getElementById('closeRsvpModal2')];
+      const rsvpBody = document.getElementById('rsvpBody');
+      const rsvpTotal = document.getElementById('rsvpTotal');
+      const rsvpConfirmed = document.getElementById('rsvpConfirmed');
+      const saveRsvpBtn = document.getElementById('saveRsvpBtn');
+      const rsvpError = document.getElementById('rsvpError');
+
+      // NUEVO: refs para loader y textos de portada
+      const pageLoader = document.getElementById('pageLoader');
+      const saludo = document.getElementById('saludo');
+      const subsaludo = document.getElementById('subsaludo');
+      const familyHint = document.getElementById('familyHint');
+
+      // NUEVO: spinner del botón Guardar
+      const saveText = document.getElementById('saveText');
+      const saveSpinner = document.getElementById('saveSpinner');
+
+      // Deshabilitar el botón de RSVP hasta que cargue la invitación
+      openRsvp.disabled = true;
+      openRsvp.classList.add('opacity-60','pointer-events-none');
+
+
+      // Cargar invitados desde Google Sheets (pestaña Guests)
+      async function cargarInvitados() {
+        const url = `${WEB_APP_URL}?fn=guests&eventId=${encodeURIComponent(EVENT_ID)}${FAMILIA_ID ? `&familiaId=${encodeURIComponent(FAMILIA_ID)}` : ''}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'No se pudo cargar la lista de invitados');
+
+        const arr = [];
+        json.guests.forEach((g, idx) => {
+          const cupo = Number(g.cupo || 1);
+          for (let i = 0; i < cupo; i++) {
+            arr.push({
+              id: String(arr.length + 1),
+              guest_id: g.guest_id || '',
+              nombre: g.nombre || `Invitado ${idx + 1}${cupo > 1 ? ' - ' + (i + 1) : ''}`,
+              asistira: false,
+              cedula: '',
+              restricciones: '',
+              comentarios: ''
+            });
+          }
+        });
+        invitados = arr;
+      }
+
+      // Render tabla
+      function renderTabla() {
+        rsvpTotal.textContent = invitados.length;
+        rsvpBody.innerHTML = '';
+
+        let confirmados = 0;
+
+        invitados.forEach((item, i) => {
+          const tr = document.createElement('tr');
+          tr.className = i % 2 ? 'bg-white' : 'bg-[#faf9f7]';
+
+          // Asistirá
+          const tdCheck = document.createElement('td');
+          tdCheck.className = 'px-3 py-2 align-middle';
+          const chk = document.createElement('input');
+          chk.type = 'checkbox';
+          chk.className = 'w-4 h-4 accent-[rgb(107,141,107)]';
+          chk.checked = item.asistira === true;
+          tdCheck.appendChild(chk);
+
+          // Nombre
+          const tdName = document.createElement('td');
+          tdName.className = 'px-3 py-2 align-middle';
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.value = item.nombre || '';
+          nameInput.placeholder = 'Nombre del invitado';
+          nameInput.className = 'input disabled:opacity-60';
+          nameInput.disabled = !item.asistira;
+          tdName.appendChild(nameInput);
+
+          // Cédula
+          const tdCed = document.createElement('td');
+          tdCed.className = 'px-3 py-2 align-middle';
+          const cedulaInput = document.createElement('input');
+          cedulaInput.type = 'text';
+          cedulaInput.inputMode = 'numeric';
+          cedulaInput.placeholder = '000-0000000-0';
+          cedulaInput.value = item.cedula || '';
+          cedulaInput.className = 'input disabled:opacity-60';
+          cedulaInput.disabled = !item.asistira;
+          tdCed.appendChild(cedulaInput);
+
+          // Eventos
+          chk.addEventListener('change', () => {
+            item.asistira = chk.checked;
+            nameInput.disabled = !item.asistira;
+            cedulaInput.disabled = !item.asistira;
+            if (!item.asistira) {
+              item.cedula = '';
+              cedulaInput.value = '';
+            }
+            renderContadores();
+          });
+          nameInput.addEventListener('input', () => { item.nombre = nameInput.value; });
+          cedulaInput.addEventListener('input', () => { item.cedula = cedulaInput.value; });
+
+          tr.appendChild(tdCheck);
+          tr.appendChild(tdName);
+          tr.appendChild(tdCed);
+          rsvpBody.appendChild(tr);
+
+          if (item.asistira) confirmados++;
+        });
+
+        rsvpConfirmed.textContent = confirmados;
+      }
+
+      function renderContadores() {
+        rsvpTotal.textContent = invitados.length;
+        rsvpConfirmed.textContent = invitados.filter(x => x.asistira).length;
+      }
+
+      // Normaliza acentos y minúsculas
+      function norm(x){
+        return (x || '').toString().toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      }
+
+      // Validación de cédula RD (módulo 10)
+      function cedulaEsValida(str) {
+        if (!str) return false;
+        const limpio = str.replace(/[^0-9]/g,'');
+        if (limpio.length !== 11) return false;
+        const pesos = [1,2,1,2,1,2,1,2,1,2];
+        let suma = 0;
+        for (let i = 0; i < 10; i++) {
+          let prod = parseInt(limpio[i],10)*pesos[i];
+          if (prod >= 10) prod = Math.floor(prod/10) + (prod%10);
+          suma += prod;
+        }
+        const digito = (10 - (suma % 10)) % 10;
+        return digito === parseInt(limpio[10],10);
+      }
+
+      // NUEVO: inicialización al cargar la página
+      async function initInvitacion() {
+        try {
+          if (!FAMILIA_ID) {
+            saludo.textContent = 'Falta el identificador de tu invitación.';
+            subsaludo.textContent = 'Abre el enlace que recibiste (contiene ?fam=ID).';
+            return;
+          }
+
+          const url = `${WEB_APP_URL}?fn=guests&eventId=${encodeURIComponent(EVENT_ID)}&familiaId=${encodeURIComponent(FAMILIA_ID)}`;
+          const res = await fetch(url);
+          const json = await res.json();
+          if (!json.ok) throw new Error(json.error || 'No se pudo cargar la lista');
+
+          if (!json.guests.length) {
+            saludo.textContent = 'No se encontró tu invitación.';
+            subsaludo.textContent = 'Verifica el enlace o contáctanos.';
+            return;
+          }
+
+          // ⬇️⬇️ INSERTA AQUÍ EL ORDENAMIENTO PARA PONER AL LÍDER PRIMERO ⬇️⬇️
+          json.guests.sort((a, b) => {
+            const la = norm(a.notas).includes('lider') || norm(a.notas).includes('leader');
+            const lb = norm(b.notas).includes('lider') || norm(b.notas).includes('leader');
+            return (lb ? 1 : 0) - (la ? 1 : 0); // true primero
+          });
+          // ⬆️⬆️ FIN DEL BLOQUE A INSERTAR ⬆️⬆️
+
+          // Elegir cabeza de familia (ya con líder primero por el sort)
+          const leader = json.guests.find(g => {
+            const n = norm(g.notas);
+            return n.includes('lider') || n.includes('leader');
+          }) || json.guests[0];
+          familiaData = leader;
+
+          // Sumar cupos
+          totalCupo = json.guests.reduce((acc, g) => acc + Number(g.cupo || 1), 0);
+
+          // Expandir por cupo -> construir "invitados"
+          const arr = [];
+          json.guests.forEach((g, idx) => {
+            const cupo = Number(g.cupo || 1);
+            for (let i = 0; i < cupo; i++) {
+              arr.push({
+                id: String(arr.length + 1),
+                guest_id: g.guest_id || '',
+                nombre: g.nombre ? (cupo === 1 ? g.nombre : `${g.nombre} - ${i+1}`) : `Invitado ${idx + 1}${cupo > 1 ? ' - ' + (i + 1) : ''}`,
+                asistira: false,
+                cedula: '',
+                restricciones: '',
+                comentarios: ''
+              });
+            }
+          });
+          invitados = arr;
+
+          // Personalizar UI
+          saludo.textContent = `Invitación para ${familiaData.nombre || 'tu familia'}`;
+          subsaludo.textContent = `Tienes ${totalCupo} espacio${totalCupo>1?'s':''} reservado${totalCupo>1?'s':''}.`;
+          if (familyHint) familyHint.textContent = `Este enlace es para la familia: ${FAMILIA_ID}`;
+
+          // Habilitar botón RSVP
+          openRsvp.disabled = false;
+          openRsvp.classList.remove('opacity-60','pointer-events-none');
+
+        } catch (err) {
+          console.error(err);
+          saludo.textContent = 'No se pudo cargar tu invitación.';
+          subsaludo.textContent = 'Intenta nuevamente en unos segundos.';
+        } finally {
+          if (pageLoader) pageLoader.style.display = 'none';
+        }
+      }
+
+      // Abrir / cerrar modal RSVP
+      openRsvp?.addEventListener('click', async () => {
+        try {
+          if (!invitados.length) {
+            await cargarInvitados();
+          }
+          renderTabla();
+          openModal(rsvpModal);
+        } catch (e) {
+          console.error(e);
+          alert('No se pudo cargar la lista de invitados.');
+        }
+      });
+      closeRsvpBtns.forEach(b => b?.addEventListener('click', () => closeModal(rsvpModal)));
+      rsvpModal?.addEventListener('click', (e) => { if (e.target === rsvpModal) closeModal(rsvpModal); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !rsvpModal.classList.contains('hidden')) closeModal(rsvpModal);
+      });
+
+      // Guardar en Google Sheets (POST text/plain)
+      saveRsvpBtn?.addEventListener('click', async () => {
+        rsvpError.classList.add('hidden');
+
+        const seleccionados = invitados.filter(x => x.asistira);
+        for (const inv of seleccionados) {
+          if (!inv.nombre?.trim()) {
+            rsvpError.textContent = 'Hay invitados confirmados sin nombre.';
+            rsvpError.classList.remove('hidden');
+            return;
+          }
+          if (!cedulaEsValida(inv.cedula)) {
+            rsvpError.textContent = `Cédula inválida para: ${inv.nombre}. Usa el formato 000-0000000-0.`;
+            rsvpError.classList.remove('hidden');
+            return;
+          }
+        }
+
+        const payload = {
+          eventId: EVENT_ID,
+          familiaId: FAMILIA_ID,
+          invitados: seleccionados.map(x => ({
+            guest_id: x.guest_id || '',
+            nombre: x.nombre.trim(),
+            cedula: x.cedula.replace(/\s+/g,'').trim(),
+            asistira: true,
+            restricciones: x.restricciones || '',
+            comentarios: x.comentarios || ''
+          })),
+          contacto: {
+            telefono: (document.getElementById('rsvpPhone').value || '').trim(),
+            email: (document.getElementById('rsvpEmail').value || '').trim()
+          },
+          totalConfirmados: seleccionados.length,
+          totalInvitados: invitados.length,
+          origin: location.origin,
+          source: 'web',
+          userAgent: navigator.userAgent
+        };
+
+       try {
+        // START loading
+        saveRsvpBtn.disabled = true;
+        saveText.classList.add('hidden');
+        saveSpinner.classList.remove('hidden');
+
+        const res = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Error guardando RSVP');
+
+        alert(`¡Gracias! Se guardaron ${json.saved} confirmaciones.${json.skipped ? ' (Saltadas: ' + json.skipped + ')' : ''}`);
+        closeModal(rsvpModal);
+      } catch (err) {
+        console.error(err);
+        rsvpError.textContent = 'No pudimos guardar la confirmación. Intenta de nuevo.';
+        rsvpError.classList.remove('hidden');
+      } finally {
+        // STOP loading
+        saveRsvpBtn.disabled = false;
+        saveText.classList.remove('hidden');
+        saveSpinner.classList.add('hidden');
+      }
+
+      });
+      // Lanza la carga inicial
+      initInvitacion();
+    })();
+  </script>
 
 </body>
 </html>
